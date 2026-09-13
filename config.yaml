@@ -1,0 +1,47 @@
+roboflow:
+  workspace: poly-gjcox
+  project_id: research_sam
+  seed_tag: to_manually_annotate
+  weak_label_tag_prefix: weak_label_v
+
+target:
+  class_name: <target-class>
+  category_id: 0
+
+seed:
+  n_frames: 40
+  strategy: farthest_point
+
+sam:
+  weights: models/sam2.1_hiera_large.pt
+  cfg: configs/sam2.1/sam2.1_hiera_l.yaml
+  device: cuda
+  ladder:
+    - name: coarse
+      points_per_side: 32
+      pred_iou_thresh: 0.80
+      stability_score_thresh: 0.95
+      crop_n_layers: 0
+    - name: fine
+      points_per_side: 64
+      pred_iou_thresh: 0.70
+      stability_score_thresh: 0.90
+      crop_n_layers: 0
+    - name: finest
+      points_per_side: 64
+      pred_iou_thresh: 0.60
+      stability_score_thresh: 0.85
+      crop_n_layers: 1
+      box_nms_thresh: 0.9
+
+matcher:
+  positive_iou: 0.75
+  negative_iou: 0.25
+  accept_threshold: 0.60
+  embedding_model: facebook/dinov2-base
+
+polygon:
+  fidelity_iou: 0.98
+  max_points: null
+  morph_kernel: 3
+  min_ring_area_frac: 0.01

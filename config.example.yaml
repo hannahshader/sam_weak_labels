@@ -1,0 +1,47 @@
+roboflow:
+  workspace: <workspace-slug>
+  project_id: <project-slug>
+  seed_tag: to_manually_annotate
+  weak_label_tag_prefix: weak_label_v      # run tag, e.g. weak_label_v1
+
+target:
+  class_name: Research-SAM
+  category_id: 0
+
+seed:
+  n_frames: 40
+  strategy: farthest_point                  # over Roboflow CLIP embeddings; fallback: random
+
+sam:
+  weights: models/sam2.1_hiera_large.pt    # relative to repo root
+  cfg: configs/sam2.1/sam2.1_hiera_l.yaml  # relative to the sam2 package root
+  device: cuda
+  ladder:
+    - name: coarse
+      points_per_side: 32
+      pred_iou_thresh: 0.80
+      stability_score_thresh: 0.95
+      crop_n_layers: 0
+    - name: fine
+      points_per_side: 64
+      pred_iou_thresh: 0.70
+      stability_score_thresh: 0.90
+      crop_n_layers: 0
+    - name: finest
+      points_per_side: 64
+      pred_iou_thresh: 0.60
+      stability_score_thresh: 0.85
+      crop_n_layers: 1
+      box_nms_thresh: 0.9
+
+matcher:
+  positive_iou: 0.75                        # candidate IoU >= this → positive
+  negative_iou: 0.25                        # candidate IoU <= this → negative
+  accept_threshold: 0.60                    # tuned by `fit`, written back to manifest
+  embedding_model: facebook/dinov2-base
+
+polygon:
+  fidelity_iou: 0.98                        # min re-rasterised IoU to keep a simplification
+  max_points: null                          # hard cap; null = fidelity decides
+  morph_kernel: 3                           # opening/closing kernel size; 0 disables
+  min_ring_area_frac: 0.01                  # drop rings < 1% of total mask area

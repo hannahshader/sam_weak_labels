@@ -1,0 +1,24 @@
+# Secrets — recreate .env on the new host from .env.example
+.env
+
+# Local environment
+.venv/
+tmp_pip/
+
+# Python / test junk
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# SAM 2.1 weights (~856 MB). Re-download on the new host:
+#   mkdir -p models
+#   wget -q -O models/sam2.1_hiera_large.pt \
+#     https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_large.pt
+models/
+
+# Regenerable runtime caches (re-fetched / re-run on the new host)
+data/images/
+data/candidates/
+data/debug/
+data/label_ledger.jsonl

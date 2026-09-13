@@ -1,0 +1,31 @@
+# Python 3.12 required (sam-2 does not build on 3.13 as of 2026-08-25).
+# Install in this order:
+#   1. torch + torchvision from the PyTorch CUDA wheel index:
+#        TMPDIR=~/tmp_pip UV_CACHE_DIR=~/.cache/uv uv pip install \
+#          torch==2.12.1 torchvision \
+#          --index-url https://download.pytorch.org/whl/cu130
+#   2. sam-2 from source (no PyPI release):
+#        TMPDIR=~/tmp_pip uv pip install \
+#          "git+https://github.com/facebookresearch/sam2.git"
+#   3. Everything else:
+#        TMPDIR=~/tmp_pip uv pip install -r requirements.txt
+
+# Vision / ML
+opencv-python-headless>=4.10,<5  # v5 wheel has a broken RPATH; bundled libs land in opencv_python_headless.libs/ but cv2.abi3.so still looks for cv2/.libs/
+scikit-learn>=1.5
+joblib>=1.4
+transformers>=4.40          # DINOv2 via HuggingFace
+numpy>=1.26,<3
+
+# Roboflow
+roboflow>=1.4.0
+
+# Config / util
+pyyaml>=6.0
+python-dotenv>=1.0
+loguru>=0.7
+requests>=2.31
+tqdm>=4.66
+
+# Dev / test
+pytest>=8.0
